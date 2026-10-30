@@ -1,0 +1,741 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>เลือกขนาดโซลาร์บ้าน</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap">
+<style>
+/* Layout: แผงกรอกข้อมูลซ้าย (ติดขอบตอนเลื่อน) + ผลลัพธ์ขวา, ซ้อนเป็นคอลัมน์เดียวบนมือถือ */
+:root {
+  --bg: #eef2f5;
+  --surface: #ffffff;
+  --ink: #14202b;
+  --muted: #5a6875;
+  --line: #d6dde4;
+  --cell: #1f3a5f;
+  --cell-soft: #e3ebf4;
+  --sun: #d99511;
+  --sun-soft: #fbefd2;
+  --good: #2c7a4d;
+  --good-soft: #e1f2e7;
+  --warn: #b0521c;
+  --warn-soft: #fbe8dc;
+  --display: "Bai Jamjuree", "IBM Plex Sans Thai", "Leelawadee UI", Tahoma, sans-serif;
+  --body: "IBM Plex Sans Thai", "Leelawadee UI", Tahoma, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0e141a; --surface: #161f28; --ink: #e5ebf1; --muted: #93a1ae; --line: #2a3643;
+  --cell: #8fb4de; --cell-soft: #1d2c3d; --sun: #f0b445; --sun-soft: #3a2e14;
+  --good: #63c48d; --good-soft: #17301f; --warn: #ec9160; --warn-soft: #3a2216; color-scheme: dark;
+} }
+:root[data-theme="dark"] {
+  --bg: #0e141a; --surface: #161f28; --ink: #e5ebf1; --muted: #93a1ae; --line: #2a3643;
+  --cell: #8fb4de; --cell-soft: #1d2c3d; --sun: #f0b445; --sun-soft: #3a2e14;
+  --good: #63c48d; --good-soft: #17301f; --warn: #ec9160; --warn-soft: #3a2216; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.6; }
+.wrap { max-width: 1180px; margin: 0 auto; padding-block: 28px 56px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; line-height: 1.25; }
+h1 { font-size: clamp(1.6rem, 3.6vw, 2.3rem); font-weight: 700; }
+h2 { font-size: 1.25rem; font-weight: 600; }
+h3 { font-size: 1.02rem; font-weight: 600; }
+p { margin: 0; }
+.num { font-variant-numeric: tabular-nums; }
+.muted { color: var(--muted); }
+.small { font-size: 0.86rem; }
+
+header.top { display: grid; gap: 8px; margin-bottom: 24px; }
+.eyebrow { font-size: 0.8rem; letter-spacing: 0.06em; color: var(--muted); font-weight: 600; }
+.lede { max-width: 68ch; color: var(--muted); }
+
+.layout { display: grid; grid-template-columns: minmax(0, 360px) minmax(0, 1fr); gap: 24px; align-items: start; }
+@media (max-width: 880px) { .layout { grid-template-columns: minmax(0, 1fr); } }
+
+/* ---------- input panel ---------- */
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px; display: grid; gap: 18px; }
+@media (min-width: 881px) { .panel { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px); max-height: calc(100vh - 24px); overflow-y: auto; } }
+.field { display: grid; gap: 6px; }
+.field > label, .field > .lbl { font-weight: 600; font-size: 0.92rem; }
+.hint { font-size: 0.8rem; color: var(--muted); line-height: 1.45; }
+input[type=number], select { width: 100%; font: inherit; font-size: 0.95rem; padding: 8px 10px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--ink); }
+input[type=number]:focus, select:focus, button:focus-visible, input[type=range]:focus-visible { outline: 2px solid var(--sun); outline-offset: 1px; }
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.seg { display: flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+.seg button { flex: 1; font: inherit; font-size: 0.86rem; padding: 6px 8px; border: 0; background: transparent; color: var(--muted); cursor: pointer; }
+.seg button + button { border-left: 1px solid var(--line); }
+.seg button[aria-pressed="true"] { background: var(--cell); color: var(--surface); font-weight: 600; }
+.presets { display: grid; gap: 6px; }
+.presets button { text-align: left; font: inherit; font-size: 0.86rem; padding: 7px 10px; border: 1px solid var(--line); border-radius: 6px; background: transparent; color: var(--ink); cursor: pointer; display: flex; justify-content: space-between; gap: 8px; }
+.presets button span:last-child { color: var(--muted); }
+.presets button[aria-pressed="true"] { border-color: var(--cell); background: var(--cell-soft); }
+input[type=range] { width: 100%; accent-color: var(--sun); }
+details.adv summary { cursor: pointer; font-weight: 600; font-size: 0.92rem; }
+details.adv[open] summary { margin-bottom: 12px; }
+details.adv .inner { display: grid; gap: 14px; }
+.sample { font-size: 0.78rem; background: var(--sun-soft); color: var(--ink); padding: 6px 10px; border-radius: 6px; }
+
+/* ---------- results ---------- */
+.results { display: grid; gap: 20px; min-width: 0; }
+.verdict { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.verdict .band { padding: 20px 22px; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 18px; align-items: center;
+  background-color: var(--cell-soft);
+  background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 22px 22px; background-position: -1px -1px; }
+.kw-badge { background: var(--cell); color: var(--surface); border-radius: 8px; padding: 12px 18px; text-align: center; font-family: var(--display); min-width: 108px; }
+.kw-badge .v { font-size: 2.4rem; font-weight: 700; line-height: 1; }
+.kw-badge .u { font-size: 0.85rem; opacity: 0.85; }
+.verdict .head { display: grid; gap: 4px; min-width: 0; }
+.verdict .head h2 { font-size: 1.35rem; }
+.reasons { padding: 18px 22px; display: grid; gap: 8px; margin: 0; list-style: none; }
+.reasons li { padding-left: 18px; position: relative; }
+.reasons li::before { content: ""; position: absolute; left: 0; top: 0.62em; width: 8px; height: 8px; border-radius: 2px; background: var(--sun); }
+
+.pill { display: inline-block; font-size: 0.76rem; font-weight: 600; padding: 2px 9px; border-radius: 999px; white-space: nowrap; }
+.pill.good { background: var(--good-soft); color: var(--good); }
+.pill.warn { background: var(--warn-soft); color: var(--warn); }
+.pill.neutral { background: var(--cell-soft); color: var(--cell); }
+
+.cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 640px) { .cards { grid-template-columns: minmax(0, 1fr); } }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: grid; gap: 10px; align-content: start; cursor: pointer; text-align: left; font: inherit; color: inherit; }
+.card[aria-pressed="true"] { border-color: var(--cell); box-shadow: 0 0 0 1px var(--cell); }
+.card.best { border-color: var(--sun); box-shadow: 0 0 0 1px var(--sun); }
+.card.best[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--sun); }
+.card .ctop { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+.card .size { font-family: var(--display); font-size: 1.6rem; font-weight: 700; line-height: 1; }
+.card .size small { font-size: 0.85rem; font-weight: 500; color: var(--muted); }
+.card dl { margin: 0; display: grid; gap: 4px; }
+.card dl div { display: flex; justify-content: space-between; gap: 10px; font-size: 0.86rem; border-bottom: 1px dashed var(--line); padding-bottom: 3px; }
+.card dt { color: var(--muted); }
+.card dd { margin: 0; font-weight: 600; font-variant-numeric: tabular-nums; text-align: right; }
+.card .big { display: grid; gap: 0; }
+.card .big .v { font-family: var(--display); font-size: 1.4rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.card .note { font-size: 0.78rem; color: var(--warn); line-height: 1.4; }
+
+.box { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px; display: grid; gap: 14px; min-width: 0; }
+.chart-wrap { overflow-x: auto; }
+.chart-wrap svg { display: block; width: 100%; min-width: 520px; height: auto; }
+.legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 0.82rem; color: var(--muted); }
+.legend i { display: inline-block; width: 12px; height: 12px; border-radius: 2px; vertical-align: -1px; margin-right: 6px; }
+
+.billrow { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 640px) { .billrow { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.stat { display: grid; gap: 2px; }
+.stat .k { font-size: 0.8rem; color: var(--muted); }
+.stat .v { font-family: var(--display); font-size: 1.3rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+.tbl-wrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 0.88rem; min-width: 480px; }
+th, td { padding: 7px 10px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+th { font-weight: 600; color: var(--muted); font-size: 0.8rem; }
+td.n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+.logic { display: grid; gap: 14px; }
+.step { display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 12px; }
+.step .no { width: 30px; height: 30px; border-radius: 6px; background: var(--cell); color: var(--surface); display: grid; place-items: center; font-family: var(--display); font-weight: 700; }
+.step p { color: var(--muted); font-size: 0.9rem; }
+code.f { font-family: var(--body); background: var(--bg); border: 1px solid var(--line); border-radius: 4px; padding: 1px 6px; font-size: 0.86rem; color: var(--ink); }
+
+.check { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; counter-reset: q; }
+.check li { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 10px; font-size: 0.92rem; }
+.check li::before { content: ""; width: 16px; height: 16px; border: 2px solid var(--cell); border-radius: 3px; margin-top: 4px; }
+.check b { font-weight: 600; }
+.cols2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+@media (max-width: 760px) { .cols2 { grid-template-columns: minmax(0, 1fr); } }
+.src { font-size: 0.82rem; color: var(--muted); display: grid; gap: 4px; }
+.src a { color: var(--cell); }
+.copybtn { justify-self: start; font: inherit; font-size: 0.86rem; font-weight: 600; padding: 7px 14px; border-radius: 6px; border: 1px solid var(--cell); background: transparent; color: var(--cell); cursor: pointer; }
+.share { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 20px; align-items: center; }
+@media (max-width: 520px) { .share { grid-template-columns: minmax(0, 1fr); justify-items: center; text-align: center; } }
+.qr { background: #ffffff; padding: 12px; border-radius: 8px; border: 1px solid var(--line); line-height: 0; }
+.qr img, .qr canvas { width: 168px; height: 168px; }
+.share .txt { display: grid; gap: 10px; min-width: 0; }
+.share .url { font-size: 0.86rem; word-break: break-all; background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 6px 10px; user-select: all; }
+.toplinks { display: flex; gap: 10px; flex-wrap: wrap; }
+.toplinks a { font-size: 0.86rem; font-weight: 600; color: var(--cell); }
+#copyOut { width: 100%; font: inherit; font-size: 0.82rem; min-height: 120px; border: 1px solid var(--line); border-radius: 6px; padding: 8px; background: var(--bg); color: var(--ink); }
+@media (prefers-reduced-motion: no-preference) { .card, .presets button { transition: border-color .15s, box-shadow .15s, background .15s; } }
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="eyebrow">ระบบออนกริด · บ้านอยู่อาศัย · อัตราค่าไฟรอบบิล ก.ย. 2569</div>
+    <h1>ควรติดโซลาร์รูฟท็อปขนาดไหน 3, 5 หรือ 10 kW</h1>
+    <p class="lede">กรอกการใช้ไฟและลักษณะบ้าน แอปจะจำลองการผลิตไฟรายชั่วโมงเทียบกับการใช้ไฟจริงของบ้าน แล้วคิดค่าไฟที่ลดได้ตามอัตราขั้นบันไดของการไฟฟ้า รายได้ขายไฟคืน และระยะคืนทุน เพื่อใช้เป็นข้อมูลก่อนคุยกับช่าง</p>
+    <div class="toplinks"><a href="#share">แชร์แอปนี้ / QR code</a></div>
+  </header>
+
+  <div class="layout">
+    <!-- ================= INPUTS ================= -->
+    <form class="panel" id="f" autocomplete="off">
+      <div class="sample" id="sampleNote">ค่าที่กรอกไว้เป็นตัวอย่าง แก้เป็นข้อมูลบ้านคุณได้เลย</div>
+
+      <div class="field">
+        <div class="lbl">การใช้ไฟเฉลี่ยต่อเดือน</div>
+        <div class="seg" role="group" aria-label="หน่วยของการใช้ไฟ">
+          <button type="button" id="modeUnits" aria-pressed="true">หน่วย (kWh)</button>
+          <button type="button" id="modeBaht" aria-pressed="false">บาท</button>
+        </div>
+        <input type="number" id="usage" min="0" step="10" value="600" inputmode="decimal">
+        <div class="hint num" id="usageHint"></div>
+        <div class="hint">ใช้ค่าเฉลี่ย 12 เดือนจากบิลจะแม่นที่สุด ถ้ามีแค่บิลหน้าร้อน ให้ลดลงราว 15–25%</div>
+      </div>
+
+      <div class="field">
+        <div class="lbl">ช่วงกลางวัน (06:00–18:00) บ้านใช้ไฟแค่ไหน</div>
+        <div class="presets" id="presets">
+          <button type="button" data-v="25"><span>กลางวันไม่มีใครอยู่ ทำงานนอกบ้าน</span><span>~25%</span></button>
+          <button type="button" data-v="40"><span>มีคนอยู่บ้านบางช่วง เปิดตู้เย็น ปั๊มน้ำ</span><span>~40%</span></button>
+          <button type="button" data-v="55"><span>อยู่บ้านทั้งวัน เปิดแอร์กลางวัน / WFH</span><span>~55%</span></button>
+          <button type="button" data-v="70"><span>ค้าขาย/ออฟฟิศในบ้าน หรือชาร์จ EV กลางวัน</span><span>~70%</span></button>
+        </div>
+        <input type="range" id="dayShare" min="10" max="85" step="1" value="40" aria-label="สัดส่วนการใช้ไฟกลางวัน">
+        <div class="hint num" id="dayHint"></div>
+      </div>
+
+      <div class="row2">
+        <div class="field">
+          <label for="region">ภูมิภาค</label>
+          <select id="region">
+            <option value="1400">กทม./ภาคกลาง</option>
+            <option value="1420">ภาคเหนือ</option>
+            <option value="1440">ภาคอีสาน</option>
+            <option value="1400">ภาคตะวันออก</option>
+            <option value="1430">ภาคตะวันตก</option>
+            <option value="1310">ภาคใต้</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="phase">ไฟเข้าบ้าน</label>
+          <select id="phase">
+            <option value="1">1 เฟส (บ้านทั่วไป)</option>
+            <option value="3">3 เฟส</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row2">
+        <div class="field">
+          <label for="orient">หลังคาหันทิศ</label>
+          <select id="orient">
+            <option value="1">ใต้ (ดีที่สุด)</option>
+            <option value="0.97">ตะวันออกเฉียงใต้ / ตะวันตกเฉียงใต้</option>
+            <option value="0.96">หลังคาแบน/ดาดฟ้า</option>
+            <option value="0.9">ตะวันออก หรือ ตะวันตก</option>
+            <option value="0.82">เหนือ</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="shade">เงาบังแดด</label>
+          <select id="shade">
+            <option value="1">ไม่มี</option>
+            <option value="0.92">บ้างเล็กน้อย (เช้า/เย็น)</option>
+            <option value="0.8">ค่อนข้างมาก (ต้นไม้/ตึกบัง)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="roof">พื้นที่หลังคาที่ใช้ได้ (ตร.ม.)</label>
+        <input type="number" id="roof" min="0" step="1" placeholder="ไม่ทราบ ปล่อยว่างได้" inputmode="decimal">
+        <div class="hint">ใช้ราว 6 ตร.ม. ต่อ 1 kW (แผง 550–620 วัตต์ + ระยะเดินซ่อม)</div>
+      </div>
+
+      <div class="field">
+        <label for="sell">ขายไฟส่วนเกินคืนการไฟฟ้า</label>
+        <select id="sell">
+          <option value="2.2">ขาย 2.20 บาท/หน่วย (โซลาร์ภาคประชาชน)</option>
+          <option value="0">ไม่ขาย (ไฟเกินทิ้ง/ระบบกันย้อน)</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="incent">สิทธิประโยชน์จากรัฐ</label>
+        <select id="incent">
+          <option value="auto">เลือกสิทธิที่คุ้มกว่าให้อัตโนมัติ</option>
+          <option value="tax">ลดหย่อนภาษี สูงสุด 200,000 บาท</option>
+          <option value="sub">เงินสนับสนุน 50,000 บาท</option>
+          <option value="none">ไม่ใช้สิทธิ</option>
+        </select>
+        <div class="hint">ข่าวส่วนใหญ่ระบุให้เลือกใช้ได้ทางใดทางหนึ่ง เงื่อนไขละเอียดอยู่ด้านล่าง</div>
+      </div>
+
+      <div class="field">
+        <label for="bracket">อัตราภาษีเงินได้ขั้นสูงสุดของคุณ</label>
+        <select id="bracket">
+          <option value="0">ไม่เสียภาษี / 0%</option>
+          <option value="0.05">5% (เงินได้สุทธิ 150,001–300,000)</option>
+          <option value="0.1" selected>10% (300,001–500,000)</option>
+          <option value="0.15">15% (500,001–750,000)</option>
+          <option value="0.2">20% (750,001–1 ล้าน)</option>
+          <option value="0.25">25% (1–2 ล้าน)</option>
+          <option value="0.3">30% (2–5 ล้าน)</option>
+          <option value="0.35">35% (เกิน 5 ล้าน)</option>
+        </select>
+      </div>
+
+      <details class="adv">
+        <summary>ตั้งค่าเพิ่มเติม (ราคาจากใบเสนอราคา ฯลฯ)</summary>
+        <div class="inner">
+          <div class="field">
+            <div class="lbl">ราคาติดตั้งรวม VAT (บาท)</div>
+            <div class="row2">
+              <div class="field"><label for="c3" class="hint">3 kW</label><input type="number" id="c3" step="1000" value="110000"></div>
+              <div class="field"><label for="c5" class="hint">5 kW</label><input type="number" id="c5" step="1000" value="160000"></div>
+            </div>
+            <div class="row2">
+              <div class="field"><label for="c10" class="hint">10 kW</label><input type="number" id="c10" step="1000" value="280000"></div>
+              <div class="field"><label for="yieldAdj" class="hint">ผลิตไฟ kWh/kW/ปี</label><input type="number" id="yieldAdj" step="10" placeholder="ตามภูมิภาค"></div>
+            </div>
+            <div class="hint">ได้ใบเสนอราคาจริงแล้วให้แก้ตรงนี้ ผลจะแม่นขึ้นมาก</div>
+          </div>
+          <div class="row2">
+            <div class="field"><label for="ft">ค่า Ft (บาท/หน่วย)</label><input type="number" id="ft" step="0.0001" value="0.1623"></div>
+            <div class="field"><label for="esc">ค่าไฟขึ้นปีละ (%)</label><input type="number" id="esc" step="0.5" value="0"></div>
+          </div>
+          <div class="row2">
+            <div class="field"><label for="contract">สัญญาขายไฟ (ปี)</label>
+              <select id="contract"><option value="10">10 ปี</option><option value="20">20 ปี</option><option value="25">ตลอดอายุระบบ</option></select></div>
+            <div class="field"><label for="deg">แผงเสื่อมปีละ (%)</label><input type="number" id="deg" step="0.1" value="0.5"></div>
+          </div>
+        </div>
+      </details>
+    </form>
+
+    <!-- ================= RESULTS ================= -->
+    <div class="results">
+      <section class="verdict" aria-live="polite">
+        <div class="band">
+          <div class="kw-badge"><div class="v num" id="recKw">5</div><div class="u">kW แนะนำ</div></div>
+          <div class="head">
+            <h2 id="recTitle">…</h2>
+            <p class="muted small" id="recSub"></p>
+          </div>
+        </div>
+        <ul class="reasons" id="reasons"></ul>
+      </section>
+
+      <section class="cards" id="cards" aria-label="เปรียบเทียบ 3 ขนาด"></section>
+
+      <section class="box">
+        <div>
+          <h2 id="chartTitle">ไฟที่ผลิตเทียบกับไฟที่บ้านใช้ ในหนึ่งวันโดยเฉลี่ย</h2>
+          <p class="muted small">กดการ์ดด้านบนเพื่อดูแต่ละขนาด ส่วนที่ทับกันคือไฟที่บ้านใช้เองทันที (คุ้มที่สุด) ส่วนที่เกินคือไฟขายคืน</p>
+        </div>
+        <div class="chart-wrap"><svg id="chart" viewBox="0 0 680 250" role="img" aria-label="กราฟรายชั่วโมง"></svg></div>
+        <div class="legend">
+          <span><i style="background:var(--line)"></i>ไฟที่บ้านใช้ (ซื้อจากการไฟฟ้า)</span>
+          <span><i style="background:var(--good)"></i>โซลาร์ใช้เอง</span>
+          <span><i style="background:var(--sun)"></i>โซลาร์เกิน → ขายคืน</span>
+        </div>
+        <div class="billrow" id="billrow"></div>
+      </section>
+
+      <section class="box">
+        <h2>ตัวเลขทั้ง 25 ปี</h2>
+        <div class="tbl-wrap"><table id="life"></table></div>
+        <p class="hint">รวมค่าเปลี่ยนอินเวอร์เตอร์ 1 ครั้งปีที่ 12 และค่าล้างแผง/ดูแลรายปี ไม่คิดดอกเบี้ยหรือค่าเสียโอกาสของเงิน</p>
+      </section>
+
+      <section class="box">
+        <h2>ตรรกะที่ใช้คำนวณ</h2>
+        <div class="logic">
+          <div class="step"><div class="no">1</div><div><h3>แยกไฟกลางวันกับกลางคืน</h3>
+            <p>โซลาร์ผลิตไฟได้แค่ช่วงมีแดด ไฟที่ใช้ตอนกลางคืนไม่ลดลงเลยถ้าไม่มีแบตเตอรี่ จึงนำหน่วยต่อเดือน ÷ 30 แล้วกระจายเป็นรายชั่วโมงตามสัดส่วนกลางวันที่เลือก (กลางคืนช่วง 18:00–23:00 ใช้มากที่สุด)</p></div></div>
+          <div class="step"><div class="no">2</div><div><h3>ไฟที่โซลาร์ผลิตได้</h3>
+            <p><code class="f">ผลิต/ปี = kW × ผลผลิตเฉพาะ × ตัวคูณทิศ × ตัวคูณเงา</code> ผลผลิตเฉพาะของไทยราว 1,300–1,450 kWh ต่อ kW ต่อปี (แดดเฉลี่ย 4.8–5.2 ชั่วโมงเต็ม/วัน หักความสูญเสียระบบราว 20%) ซึ่งตรงกับค่าในฐานข้อมูล PVGIS / Global Solar Atlas แล้วกระจายตามเส้นโค้งแสงอาทิตย์ 06:00–18:00 สูงสุดตอนเที่ยง</p></div></div>
+          <div class="step"><div class="no">3</div><div><h3>ใช้เองก่อน เกินจึงขาย</h3>
+            <p>ทุกชั่วโมง <code class="f">ใช้เอง = min(ผลิต, ใช้)</code> ส่วนเกินขายได้ 2.20 บาท ขณะที่ไฟที่ซื้อจากการไฟฟ้าขั้นบนสุดราว 4.5–4.8 บาทรวม Ft และ VAT ระบบที่คุ้มคือระบบที่ไฟส่วนใหญ่ถูกใช้เอง ไม่ใช่ระบบที่ใหญ่ที่สุด</p></div></div>
+          <div class="step"><div class="no">4</div><div><h3>คิดบิลจริงแบบขั้นบันได</h3>
+            <p>อัตราบ้านอยู่อาศัยใหม่ (รอบบิล ก.ย. 69): หน่วย 1–200 = 3.0000, 201–400 = 4.1584, 401 ขึ้นไป = 4.3583 บาท + Ft 0.1623 + ค่าบริการ 38.22 บาท/เดือน + VAT 7% ไฟที่โซลาร์แทนได้คือหน่วยขั้นบนสุด บ้านที่ใช้ไฟมากจึงได้ประโยชน์ต่อหน่วยมากกว่า</p></div></div>
+          <div class="step"><div class="no">5</div><div><h3>ระยะคืนทุนและเลือกขนาด</h3>
+            <p>รวมเงินที่ประหยัดและรายได้ขายไฟรายปี (หักแผงเสื่อม 0.5%/ปี ค่าดูแล และค่าอินเวอร์เตอร์ใหม่) เทียบกับเงินลงทุนหลังหักสิทธิรัฐ เลือกขนาดที่คืนทุนเร็วที่สุด แต่ถ้าขนาดใหญ่กว่าคืนทุนช้ากว่าไม่เกิน 1 ปีและกำไร 25 ปีมากกว่า จะแนะนำขนาดใหญ่กว่า ตัดขนาดที่ติดข้อจำกัดเฟสไฟหรือพื้นที่หลังคาออก</p></div></div>
+        </div>
+        <p class="hint">ข้อจำกัดของแบบจำลอง: ใช้วันเฉลี่ยวันเดียว ไม่แยกหน้าฝน/หน้าร้อน และวันมีเมฆทำให้ใช้เองได้น้อยกว่าที่คำนวณเล็กน้อย ความคลาดเคลื่อนโดยรวมประมาณ ±10–15%</p>
+      </section>
+
+      <div class="cols2">
+        <section class="box">
+          <h2>สิทธิจากรัฐ (ณ ต.ค. 2569)</h2>
+          <ul class="check">
+            <li><div><b>ลดหย่อนภาษี</b> ตามที่จ่ายจริงไม่เกิน 200,000 บาท ระบบออนกริดติดใหม่ไม่เกิน 10 kWp ติดตั้งช่วง 3 มี.ค. 2569 – 31 ธ.ค. 2571 ต้องมี e-Tax Invoice และเชื่อมต่อกับการไฟฟ้าสำเร็จ ได้คืน = ค่าลดหย่อน × อัตราภาษีขั้นสูงสุดของคุณ</div></li>
+            <li><div><b>เงินสนับสนุน 50,000 บาท</b> (โซลาร์ภาคประชาชน) ลงทะเบียน 27 ต.ค. 2569 – 31 ม.ค. 2570 เจ้าของมิเตอร์บ้านอยู่อาศัย ข่าวระบุขนาด 5–10 kW จ่ายคืนหลังเชื่อมต่อระบบแล้ว แอปนี้จึงไม่ให้สิทธินี้กับระบบ 3 kW</div></li>
+            <li><div><b>ขายไฟคืน 2.20 บาท/หน่วย</b> แบบ Net Billing ใช้เองก่อน ส่วนเกินขาย ระยะสัญญามีรายงานทั้ง 10 และ 20 ปี แอปตั้งต้นที่ 10 ปีแบบระมัดระวัง</div></li>
+            <li><div class="small muted">กฎยังมีการปรับ ให้เช็กประกาศของ กฟภ./กฟน. และกรมสรรพากรอีกครั้งก่อนเซ็นสัญญา</div></li>
+          </ul>
+        </section>
+        <section class="box">
+          <h2>คำถามที่ต้องถามช่าง</h2>
+          <ul class="check">
+            <li><div>ยี่ห้อ<b>อินเวอร์เตอร์อยู่ในบัญชีรายชื่อที่ กฟภ./กฟน. รับรอง</b>หรือไม่ (ไม่อยู่ = ขอขนานไฟไม่ได้)</div></li>
+            <li><div><b>รวมค่าขออนุญาต</b>ขนานไฟ แจ้ง อปท. และวิศวกรเซ็นรับรองโครงสร้างหลังคาแล้วหรือยัง</div></li>
+            <li><div>มิเตอร์ปัจจุบันขนาดเท่าไร ต้อง<b>เปลี่ยนมิเตอร์/ขยายเป็น 15(45)A หรือ 3 เฟส</b>ไหม ใครจ่าย</div></li>
+            <li><div>ประกันแผง (ผลิตภัณฑ์ 12+ ปี / กำลังผลิต 25–30 ปี) ประกันอินเวอร์เตอร์ (10 ปีขึ้นไป) และ<b>ประกันงานติดตั้ง/รั่วซึม</b>กี่ปี</div></li>
+            <li><div>ขอให้ระบุ<b>ผลผลิตที่คาดไว้ kWh/ปี</b>เป็นตัวเลข แล้วเทียบกับตัวเลขในแอปนี้</div></li>
+            <li><div>ออก <b>e-Tax Invoice</b> ได้ไหม (จำเป็นสำหรับลดหย่อนภาษี) และเป็นผู้ติดตั้งที่ร่วมโครงการ 50,000 บาทหรือไม่</div></li>
+            <li><div>มีแอปดูการผลิตไฟรายวัน และ<b>ระบบกันไฟย้อน</b>ตอนไฟดับหรือไม่</div></li>
+          </ul>
+        </section>
+      </div>
+
+      <section class="box">
+        <h2>สรุปสั้นสำหรับส่งให้ช่าง</h2>
+        <textarea id="copyOut" readonly aria-label="ข้อความสรุป"></textarea>
+        <button type="button" class="copybtn" id="copyBtn">คัดลอกข้อความ</button>
+      </section>
+
+      <section class="box" id="share">
+        <h2>แชร์ให้คนอื่นใช้</h2>
+        <div class="share">
+          <div class="qr" id="qr" aria-label="QR code ลิงก์แอปนี้"></div>
+          <div class="txt">
+            <p>สแกน QR หรือส่งลิงก์นี้ เปิดได้ทั้งมือถือและคอมพิวเตอร์ แต่ละคนกรอกข้อมูลบ้านของตัวเองได้เลย</p>
+            <div class="url num" id="shareUrl"></div>
+            <button type="button" class="copybtn" id="copyLink">คัดลอกลิงก์</button>
+            <p class="hint">ข้อมูลที่แต่ละคนกรอกเก็บไว้ในเครื่องของคนนั้นเท่านั้น คนอื่นมองไม่เห็น และเปิดครั้งหน้าค่าเดิมยังอยู่</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="src">
+        <b>แหล่งข้อมูล</b>
+        <a href="https://www.erc.or.th/th/automatic/" target="_blank" rel="noopener">กกพ. – ค่า Ft งวด ก.ย.–ธ.ค. 2569</a>
+        <a href="https://www.tcijthai.com/news/2026/8/current/15256" target="_blank" rel="noopener">โครงสร้างค่าไฟบ้านอยู่อาศัยใหม่ เริ่มบิล ก.ย. 2569</a>
+        <a href="https://www.supalai.com/blog/detail/home-electricity-rate-change" target="_blank" rel="noopener">อัตราขั้นบันไดใหม่ 1–200 / 201–400 / 401+</a>
+        <a href="https://www.krungsri.com/th/krungsri-the-coach/loan/mortgages/solar-tax-deduction" target="_blank" rel="noopener">กรุงศรี – ลดหย่อนภาษีโซลาร์ 2569</a>
+        <a href="https://www.krungsri.com/th/krungsri-the-coach/loan/mortgages/solar-home-installation-permit" target="_blank" rel="noopener">กรุงศรี – ช่วงราคาติดตั้ง 5 kW / 10 kW</a>
+        <a href="https://www.dailynews.co.th/news/6309637/" target="_blank" rel="noopener">เดลินิวส์ – ลงทะเบียนโซลาร์ภาคประชาชน 50,000 บาท</a>
+        <a href="https://thaipublica.org/?p=408352" target="_blank" rel="noopener">ไทยพับลิก้า – กพช. รับซื้อไฟ 2.20 บาท แบบ Net Billing</a>
+        <a href="https://globalsolaratlas.info/map?c=13.75,100.5,7" target="_blank" rel="noopener">Global Solar Atlas – ค่าผลผลิตไฟจากแสงอาทิตย์ในไทย</a>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+(function () {
+  const APP_URL = /^https?:$/.test(location.protocol) && !/claude|anthropic/.test(location.hostname)
+    ? location.origin + location.pathname
+    : 'https://claude.ai/artifact/BWwjqMFV9m6ovNiCjkf7xQ';
+  document.getElementById('shareUrl').textContent = APP_URL;
+  try { new QRCode(document.getElementById('qr'), { text: APP_URL, width: 336, height: 336, colorDark: '#14202b', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M }); }
+  catch (e) { document.getElementById('qr').hidden = true; }
+  document.getElementById('copyLink').addEventListener('click', (ev) => {
+    const btn = ev.currentTarget;
+    const sel = () => { const r = document.createRange(); r.selectNodeContents(document.getElementById('shareUrl')); const s = getSelection(); s.removeAllRanges(); s.addRange(r); };
+    try { navigator.clipboard.writeText(APP_URL).then(() => { btn.textContent = 'คัดลอกแล้ว'; setTimeout(() => btn.textContent = 'คัดลอกลิงก์', 1800); }, sel); } catch (e) { sel(); }
+  });
+})();
+(function () {
+  const SIZES = [3, 5, 10];
+  const VAT = 1.07, SERVICE = 38.22, YEARS = 25, M2_PER_KW = 6;
+  const TIERS = [[200, 3.0], [200, 4.1584], [Infinity, 4.3583]];
+  const INVERTER = { 3: 20000, 5: 28000, 10: 45000 };
+  const UPKEEP = { 3: 800, 5: 1000, 10: 1500 };
+  const $ = (id) => document.getElementById(id);
+  const fmt = (n, d = 0) => Number(n).toLocaleString('th-TH', { minimumFractionDigits: d, maximumFractionDigits: d });
+
+  let usageMode = 'units';
+  let selected = null;
+
+  // ---------- tariff ----------
+  function energyCharge(u) {
+    let left = Math.max(0, u), e = 0;
+    for (const [blk, rate] of TIERS) { const q = Math.min(left, blk); e += q * rate; left -= q; if (left <= 0) break; }
+    return e;
+  }
+  function bill(u, ft) { u = Math.max(0, u); return (energyCharge(u) + SERVICE + ft * u) * VAT; }
+  function unitsFromBaht(b, ft) {
+    let lo = 0, hi = 20000;
+    for (let i = 0; i < 50; i++) { const m = (lo + hi) / 2; if (bill(m, ft) < b) lo = m; else hi = m; }
+    return lo;
+  }
+
+  // ---------- hourly shapes ----------
+  const DAY_W = [0.8, 0.9, 0.9, 1, 1, 1.1, 1.1, 1.1, 1.1, 1, 1, 0.9];             // 06..17
+  const NIGHT_W = { 18: 1.5, 19: 1.6, 20: 1.6, 21: 1.5, 22: 1.3, 23: 1.0, 0: 0.9, 1: 0.85, 2: 0.8, 3: 0.8, 4: 0.8, 5: 0.85 };
+  function loadProfile(daily, share) {
+    const out = new Array(24).fill(0);
+    const dSum = DAY_W.reduce((a, b) => a + b, 0);
+    const nSum = Object.values(NIGHT_W).reduce((a, b) => a + b, 0);
+    DAY_W.forEach((w, i) => { out[6 + i] = daily * share * w / dSum; });
+    for (const h in NIGHT_W) out[h] = daily * (1 - share) * NIGHT_W[h] / nSum;
+    return out;
+  }
+  const SOLAR_SHAPE = (() => {
+    const s = new Array(24).fill(0);
+    for (let h = 0; h < 24; h++) { const c = h + 0.5; if (c > 6 && c < 18) s[h] = Math.pow(Math.sin(Math.PI * (c - 6) / 12), 1.3); }
+    const t = s.reduce((a, b) => a + b, 0);
+    return s.map(v => v / t);
+  })();
+
+  // ---------- read inputs ----------
+  function num(id, def) { const v = parseFloat($(id).value); return isFinite(v) ? v : def; }
+  function inputs() {
+    const ft = num('ft', 0.1623);
+    const raw = num('usage', 0);
+    const units = usageMode === 'units' ? raw : unitsFromBaht(raw, ft);
+    const yieldBase = num('yieldAdj', NaN);
+    return {
+      ft, units,
+      share: num('dayShare', 40) / 100,
+      yieldY: isFinite(yieldBase) && yieldBase > 0 ? yieldBase : parseFloat($('region').value),
+      orient: parseFloat($('orient').value),
+      shade: parseFloat($('shade').value),
+      phase: parseInt($('phase').value, 10),
+      roof: num('roof', NaN),
+      sell: parseFloat($('sell').value),
+      incent: $('incent').value,
+      bracket: parseFloat($('bracket').value),
+      cost: { 3: num('c3', 110000), 5: num('c5', 160000), 10: num('c10', 280000) },
+      esc: num('esc', 0) / 100,
+      contract: parseInt($('contract').value, 10),
+      deg: num('deg', 0.5) / 100,
+    };
+  }
+
+  // ---------- simulate one size ----------
+  function simulate(kw, I) {
+    const dailyLoad = I.units * 12 / 365;
+    const load = loadProfile(dailyLoad, I.share);
+    const prodDay1 = kw * I.yieldY * I.orient * I.shade / 365;
+    const hourly = (degF) => {
+      let self = 0, exp = 0; const rows = [];
+      for (let h = 0; h < 24; h++) {
+        const p = prodDay1 * degF * SOLAR_SHAPE[h];
+        const s = Math.min(p, load[h]);
+        self += s; exp += p - s; rows.push({ load: load[h], prod: p, self: s });
+      }
+      return { self, exp, rows };
+    };
+    const y1 = hourly(1);
+    const mSelf = y1.self * 365 / 12, mExp = y1.exp * 365 / 12;
+    const before = bill(I.units, I.ft), after = bill(I.units - mSelf, I.ft);
+    const mSave = before - after, mSell = mExp * I.sell;
+
+    // incentives
+    const cost = I.cost[kw];
+    const tax = Math.min(cost, 200000) * I.bracket;
+    const sub = kw >= 5 ? Math.min(50000, cost) : 0;
+    let incentive = 0, incentName = 'ไม่ใช้สิทธิ';
+    if (I.incent === 'tax') { incentive = tax; incentName = 'ลดหย่อนภาษี'; }
+    else if (I.incent === 'sub') { incentive = sub; incentName = sub ? 'เงินสนับสนุน 50,000' : 'ไม่เข้าเงื่อนไข 50,000'; }
+    else if (I.incent === 'auto') { if (sub >= tax && sub > 0) { incentive = sub; incentName = 'เงินสนับสนุน 50,000'; } else if (tax > 0) { incentive = tax; incentName = 'ลดหย่อนภาษี'; } }
+    const net = cost - incentive;
+
+    // lifetime cash flow
+    let cum = -net, payback = null, totSave = 0, totSell = 0, totCost = 0;
+    for (let y = 1; y <= YEARS; y++) {
+      const d = Math.pow(1 - I.deg, y - 1);
+      const r = y === 1 ? y1 : hourly(d);
+      const ms = r.self * 365 / 12;
+      const save = (bill(I.units, I.ft) - bill(I.units - ms, I.ft)) * 12 * Math.pow(1 + I.esc, y - 1);
+      const sell = y <= I.contract ? r.exp * 365 * I.sell : 0;
+      const outflow = UPKEEP[kw] + (y === 12 ? INVERTER[kw] : 0);
+      const flow = save + sell - outflow;
+      totSave += save; totSell += sell; totCost += outflow;
+      if (payback === null && cum + flow >= 0) payback = y - 1 + (-cum) / flow;
+      cum += flow;
+    }
+
+    const prodYear = prodDay1 * 365;
+    const selfPct = prodYear > 0 ? y1.self / (y1.self + y1.exp) : 0;
+    const coverPct = dailyLoad > 0 ? y1.self / dailyLoad : 0;
+    const flags = [];
+    if (I.phase === 1 && kw > 5) flags.push('ไฟ 1 เฟสขนานไฟได้ไม่เกิน 5 kW ต้องขอเปลี่ยนเป็น 3 เฟสก่อน (มีค่าใช้จ่ายเพิ่ม)');
+    if (isFinite(I.roof) && I.roof > 0 && I.roof < kw * M2_PER_KW) flags.push(`ต้องใช้หลังคาราว ${kw * M2_PER_KW} ตร.ม. มีอยู่ ${fmt(I.roof)} ตร.ม.`);
+    return { kw, load, rows: y1.rows, prodYear, mProd: prodYear / 12, mSelf, mExp, selfPct, coverPct, before, after, mSave, mSell,
+      cost, incentive, incentName, net, payback, gain25: cum, totSave, totSell, totCost, flags, feasible: flags.length === 0 };
+  }
+
+  function recommend(res, I) {
+    const ok = res.filter(r => r.feasible && r.payback !== null);
+    if (!ok.length) return null;
+    let best = ok.reduce((a, b) => (b.payback < a.payback ? b : a));
+    for (const r of ok) if (r.kw > best.kw && r.payback <= best.payback + 1 && r.gain25 > best.gain25) best = r;
+    return best;
+  }
+
+  // ---------- render ----------
+  function render() {
+    const I = inputs();
+    $('usageHint').textContent = usageMode === 'units'
+      ? `≈ ${fmt(bill(I.units, I.ft))} บาท/เดือน ตามอัตราใหม่ (รวม Ft + VAT)`
+      : `≈ ${fmt(I.units)} หน่วย/เดือน`;
+    const dailyLoad = I.units * 12 / 365;
+    $('dayHint').textContent = `กลางวัน ${Math.round(I.share * 100)}% ≈ ${fmt(dailyLoad * I.share, 1)} หน่วย/วัน · กลางคืน ≈ ${fmt(dailyLoad * (1 - I.share), 1)} หน่วย/วัน`;
+    document.querySelectorAll('#presets button').forEach(b => b.setAttribute('aria-pressed', String(Math.abs(b.dataset.v - I.share * 100) < 0.5)));
+
+    const res = SIZES.map(k => simulate(k, I));
+    const best = recommend(res, I);
+    const perKwDay = I.yieldY * I.orient * I.shade / 365;
+    const ideal = dailyLoad * I.share / perKwDay;
+
+    // verdict
+    if (!best || I.units < 1) {
+      $('recKw').textContent = '–';
+      $('recTitle').textContent = 'ยังไม่มีขนาดที่คืนทุนภายใน 25 ปี';
+      $('recSub').textContent = 'ลองตรวจตัวเลขการใช้ไฟหรือราคาติดตั้งอีกครั้ง';
+      $('reasons').innerHTML = '';
+    } else {
+      const pb = best.payback;
+      const tone = pb <= 6 ? 'คุ้มมาก' : pb <= 8 ? 'คุ้ม' : pb <= 11 ? 'พอคุ้ม' : 'คุ้มช้า';
+      $('recKw').textContent = best.kw;
+      $('recTitle').textContent = `ติดตั้ง ${best.kw} kW · คืนทุนราว ${fmt(pb, 1)} ปี (${tone})`;
+      $('recSub').textContent = `ลงทุนสุทธิ ${fmt(best.net)} บาท หลังใช้สิทธิ${best.incentName === 'ไม่ใช้สิทธิ' ? ' (ไม่ได้ใช้สิทธิ)' : best.incentName} · กำไรสะสม 25 ปี ≈ ${fmt(best.gain25)} บาท`;
+      const R = [];
+      R.push(`ตอนกลางวันบ้านใช้ไฟราว ${fmt(dailyLoad * I.share, 1)} หน่วย/วัน ขนาดที่ผลิตพอดีกับไฟกลางวันคือ ≈ ${fmt(ideal, 1)} kW`);
+      R.push(`ระบบ ${best.kw} kW ผลิต ≈ ${fmt(best.mProd)} หน่วย/เดือน บ้านใช้เองได้ ${Math.round(best.selfPct * 100)}% ของที่ผลิต และแทนไฟจากการไฟฟ้าได้ ${Math.round(best.mSelf / I.units * 100)}% ของการใช้ทั้งเดือน`);
+      R.push(`ค่าไฟลดจาก ${fmt(best.before)} เหลือ ${fmt(best.after)} บาท/เดือน${best.mSell > 0 ? ` และขายไฟได้อีก ≈ ${fmt(best.mSell)} บาท/เดือน` : ''}`);
+      const bigger = res.find(r => r.kw > best.kw && r.feasible && r.payback !== null);
+      if (bigger) R.push(`${bigger.kw} kW ใช้เองได้แค่ ${Math.round(bigger.selfPct * 100)}% ไฟที่เกินขายได้ 2.20 บาท ถูกกว่าค่าไฟที่ซื้อเกือบครึ่ง จึงคืนทุนช้ากว่า (${fmt(bigger.payback, 1)} ปี)`);
+      const blocked = res.filter(r => !r.feasible);
+      blocked.forEach(r => R.push(`${r.kw} kW ไม่แนะนำ: ${r.flags.join(' · ')}`));
+      if (I.share < 0.3) R.push('ไฟส่วนใหญ่ใช้กลางคืน ถ้าอยากลดค่าไฟมากกว่านี้ ย้ายงานใช้ไฟ (ซักผ้า รีดผ้า ชาร์จรถ ปั๊มน้ำ) มาตอนกลางวันได้ผลกว่าการเพิ่มขนาดระบบ');
+      if (I.units <= 200) R.push('บ้านใช้ไฟไม่เกิน 200 หน่วย หน่วยที่โซลาร์แทนได้คิดแค่ 3.00 บาท ระยะคืนทุนจึงยาว');
+      $('reasons').innerHTML = R.map(t => `<li>${t}</li>`).join('');
+    }
+
+    if (selected === null || !SIZES.includes(selected)) selected = best ? best.kw : 5;
+
+    // cards
+    $('cards').innerHTML = res.map(r => {
+      const isBest = best && r.kw === best.kw;
+      const pill = !r.feasible ? '<span class="pill warn">ติดข้อจำกัด</span>'
+        : isBest ? '<span class="pill good">แนะนำ</span>'
+        : r.selfPct < 0.55 ? '<span class="pill warn">ใหญ่เกินการใช้</span>' : '<span class="pill neutral">ทางเลือก</span>';
+      return `<button type="button" class="card${isBest ? ' best' : ''}" data-kw="${r.kw}" aria-pressed="${r.kw === selected}">
+        <div class="ctop"><div class="size num">${r.kw} <small>kW</small></div>${pill}</div>
+        <div class="big"><span class="muted small">คืนทุน</span><span class="v">${r.payback === null ? 'เกิน 25 ปี' : fmt(r.payback, 1) + ' ปี'}</span></div>
+        <dl>
+          <div><dt>ผลิตไฟ/เดือน</dt><dd>${fmt(r.mProd)} หน่วย</dd></div>
+          <div><dt>ใช้เองได้</dt><dd>${Math.round(r.selfPct * 100)}%</dd></div>
+          <div><dt>ค่าไฟลด/เดือน</dt><dd>${fmt(r.mSave)} ฿</dd></div>
+          <div><dt>ขายไฟ/เดือน</dt><dd>${fmt(r.mSell)} ฿</dd></div>
+          <div><dt>ราคาติดตั้ง</dt><dd>${fmt(r.cost)} ฿</dd></div>
+          <div><dt>สิทธิรัฐ</dt><dd>−${fmt(r.incentive)} ฿</dd></div>
+          <div><dt>กำไร 25 ปี</dt><dd>${fmt(r.gain25)} ฿</dd></div>
+          <div><dt>หลังคาที่ต้องใช้</dt><dd>~${r.kw * M2_PER_KW} ตร.ม.</dd></div>
+        </dl>
+        ${r.flags.map(f => `<div class="note">${f}</div>`).join('')}
+      </button>`;
+    }).join('');
+    document.querySelectorAll('#cards .card').forEach(c => c.addEventListener('click', () => { selected = +c.dataset.kw; render(); }));
+
+    const cur = res.find(r => r.kw === selected);
+    drawChart(cur);
+    $('chartTitle').textContent = `ระบบ ${cur.kw} kW: ไฟที่ผลิตเทียบกับไฟที่บ้านใช้ ในหนึ่งวันโดยเฉลี่ย`;
+    $('billrow').innerHTML = [
+      ['ค่าไฟเดิม/เดือน', fmt(cur.before) + ' ฿'],
+      ['ค่าไฟหลังติด', fmt(cur.after) + ' ฿'],
+      ['ขายไฟได้', fmt(cur.mSell) + ' ฿'],
+      ['ได้ประโยชน์รวม/ปี', fmt((cur.mSave + cur.mSell) * 12) + ' ฿'],
+    ].map(([k, v]) => `<div class="stat"><span class="k">${k}</span><span class="v">${v}</span></div>`).join('');
+
+    // lifetime table
+    const rowsT = [
+      ['เงินลงทุน (ราคาติดตั้ง)', r => fmt(r.cost)],
+      ['หักสิทธิรัฐ', r => `−${fmt(r.incentive)}<div class="hint">${r.incentName}</div>`],
+      ['ลงทุนสุทธิ', r => `<b>${fmt(r.net)}</b>`],
+      ['ค่าไฟที่ประหยัดได้ 25 ปี', r => fmt(r.totSave)],
+      [`รายได้ขายไฟ (${I.contract >= 25 ? '25' : I.contract} ปี)`, r => fmt(r.totSell)],
+      ['ค่าดูแล + อินเวอร์เตอร์ใหม่', r => `−${fmt(r.totCost)}`],
+      ['กำไรสุทธิ 25 ปี', r => `<b>${fmt(r.gain25)}</b>`],
+      ['ผลตอบแทนต่อเงินลงทุน', r => r.net > 0 ? `${fmt((r.gain25 / r.net) * 100)}%` : '–'],
+    ];
+    $('life').innerHTML = `<thead><tr><th>บาท</th>${res.map(r => `<th style="text-align:right">${r.kw} kW</th>`).join('')}</tr></thead><tbody>` +
+      rowsT.map(([k, f]) => `<tr><td>${k}</td>${res.map(r => `<td class="n">${f(r)}</td>`).join('')}</tr>`).join('') + '</tbody>';
+
+    // copy summary
+    const b = best || cur;
+    $('copyOut').value = [
+      `ข้อมูลบ้านสำหรับประเมินโซลาร์รูฟท็อป`,
+      `- ใช้ไฟเฉลี่ย ${fmt(I.units)} หน่วย/เดือน (≈ ${fmt(bill(I.units, I.ft))} บาท) ใช้กลางวันราว ${Math.round(I.share * 100)}%`,
+      `- ไฟเข้าบ้าน ${I.phase} เฟส · หลังคาหัน${$('orient').selectedOptions[0].text} · เงา: ${$('shade').selectedOptions[0].text}${isFinite(I.roof) && I.roof > 0 ? ` · หลังคาว่าง ${fmt(I.roof)} ตร.ม.` : ''}`,
+      `- ขนาดที่คำนวณได้: ${b.kw} kW (ผลิตพอดีไฟกลางวัน ≈ ${fmt(ideal, 1)} kW) คาดผลิต ≈ ${fmt(b.prodYear)} หน่วย/ปี`,
+      `- ต้องการ: ระบบออนกริด ขนานไฟและขายไฟคืน 2.20 บาท, อินเวอร์เตอร์ในบัญชีการไฟฟ้า, e-Tax Invoice`,
+      `- ขอใบเสนอราคาที่ระบุ: ยี่ห้อ/รุ่นแผงและอินเวอร์เตอร์, ผลผลิตคาดการณ์ kWh/ปี, ค่าขออนุญาตทั้งหมด, ประกันงานติดตั้งและรั่วซึม`,
+    ].join('\n');
+
+    save();
+  }
+
+  // ---------- chart ----------
+  function drawChart(r) {
+    const W = 680, H = 250, L = 46, Rr = 12, T = 14, B = 34;
+    const iw = W - L - Rr, ih = H - T - B;
+    const max = Math.max(0.5, ...r.rows.map(x => Math.max(x.load, x.prod)));
+    const step = max > 6 ? 2 : max > 3 ? 1 : max > 1.5 ? 0.5 : 0.25;
+    const top = Math.ceil(max / step) * step;
+    const y = v => T + ih - (v / top) * ih;
+    const bw = iw / 24;
+    let s = '';
+    for (let v = 0; v <= top + 1e-9; v += step) {
+      s += `<line x1="${L}" x2="${W - Rr}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)" stroke-width="1"/>`;
+      s += `<text x="${L - 6}" y="${y(v) + 4}" text-anchor="end" font-size="11" fill="var(--muted)">${fmt(v, step < 1 ? 2 : 0)}</text>`;
+    }
+    r.rows.forEach((x, h) => {
+      const x0 = L + h * bw + 2, w = bw - 4;
+      s += `<rect x="${x0}" y="${y(x.load)}" width="${w}" height="${y(0) - y(x.load)}" fill="var(--line)"/>`;
+      if (x.self > 0) s += `<rect x="${x0}" y="${y(x.self)}" width="${w}" height="${y(0) - y(x.self)}" fill="var(--good)"/>`;
+      if (x.prod > x.self + 1e-6) s += `<rect x="${x0}" y="${y(x.prod)}" width="${w}" height="${y(x.self) - y(x.prod)}" fill="var(--sun)"/>`;
+    });
+    for (let h = 0; h <= 24; h += 3) s += `<text x="${L + h * bw}" y="${H - 14}" text-anchor="middle" font-size="11" fill="var(--muted)">${String(h).padStart(2, '0')}:00</text>`;
+    s += `<text x="12" y="${T + ih / 2}" font-size="11" fill="var(--muted)" transform="rotate(-90 12 ${T + ih / 2})" text-anchor="middle">หน่วย (kWh) ต่อชั่วโมง</text>`;
+    $('chart').innerHTML = s;
+  }
+
+  // ---------- persistence (per-viewer convenience) ----------
+  const IDS = ['usage', 'dayShare', 'region', 'phase', 'orient', 'shade', 'roof', 'sell', 'incent', 'bracket', 'c3', 'c5', 'c10', 'yieldAdj', 'ft', 'esc', 'contract', 'deg'];
+  function save() {
+    try { localStorage.setItem('solar-size-v1', JSON.stringify({ mode: usageMode, v: IDS.map(id => [id, $(id).selectedIndex ?? null, $(id).value]) })); } catch (e) {}
+  }
+  function load() {
+    try {
+      const d = JSON.parse(localStorage.getItem('solar-size-v1') || 'null');
+      if (!d) return;
+      usageMode = d.mode || 'units';
+      d.v.forEach(([id, idx, val]) => { const el = $(id); if (!el) return; if (el.tagName === 'SELECT' && idx !== null) el.selectedIndex = idx; else el.value = val; });
+      $('sampleNote').hidden = true;
+    } catch (e) {}
+  }
+
+  function setMode(m) {
+    if (m === usageMode) return;
+    const I = inputs();
+    usageMode = m;
+    $('usage').value = m === 'units' ? Math.round(I.units) : Math.round(bill(I.units, I.ft) / 10) * 10;
+    syncMode(); render();
+  }
+  function syncMode() {
+    $('modeUnits').setAttribute('aria-pressed', String(usageMode === 'units'));
+    $('modeBaht').setAttribute('aria-pressed', String(usageMode === 'baht'));
+  }
+
+  $('modeUnits').addEventListener('click', () => setMode('units'));
+  $('modeBaht').addEventListener('click', () => setMode('baht'));
+  document.querySelectorAll('#presets button').forEach(b => b.addEventListener('click', () => { $('dayShare').value = b.dataset.v; render(); }));
+  $('f').addEventListener('input', () => { $('sampleNote').hidden = true; render(); });
+  $('f').addEventListener('change', render);
+  $('f').addEventListener('submit', e => e.preventDefault());
+  $('copyBtn').addEventListener('click', () => {
+    const t = $('copyOut').value;
+    const done = () => { $('copyBtn').textContent = 'คัดลอกแล้ว'; setTimeout(() => $('copyBtn').textContent = 'คัดลอกข้อความ', 1800); };
+    try { navigator.clipboard.writeText(t).then(done, () => { $('copyOut').select(); }); } catch (e) { $('copyOut').select(); }
+  });
+
+  load(); syncMode(); render();
+})();
+</script>
+
+</body>
+</html>
