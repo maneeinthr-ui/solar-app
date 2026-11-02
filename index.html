@@ -282,6 +282,17 @@ code.f { font-family: var(--body); background: var(--bg); border: 1px solid var(
         </select>
       </div>
 
+      <div class="field">
+        <label for="pay">จ่ายค่าติดตั้งอย่างไร</label>
+        <select id="pay">
+          <option value="cash">เงินสด</option>
+          <option value="gsb">ผ่อนกับธนาคารออมสิน 2.5% 7 ปี</option>
+          <option value="ghb">ผ่อนกับ ธอส. 2.5% 7 ปี</option>
+          <option value="baac">ผ่อนกับ ธ.ก.ส. 2.5% 7 ปี</option>
+        </select>
+        <div class="hint" id="loanInfo"></div>
+      </div>
+
       <details class="adv">
         <summary>ตั้งค่าเพิ่มเติม (ราคาจากใบเสนอราคา ฯลฯ)</summary>
         <div class="inner">
@@ -305,6 +316,10 @@ code.f { font-family: var(--body); background: var(--bg); border: 1px solid var(
             <div class="field"><label for="contract">สัญญาขายไฟ (ปี)</label>
               <select id="contract"><option value="10">10 ปี</option><option value="20">20 ปี</option><option value="25">ตลอดอายุระบบ</option></select></div>
             <div class="field"><label for="deg">แผงเสื่อมปีละ (%)</label><input type="number" id="deg" step="0.1" value="0.5"></div>
+          </div>
+          <div class="row2">
+            <div class="field"><label for="lrate">ดอกเบี้ยเงินกู้ (%/ปี)</label><input type="number" id="lrate" step="0.05" value="2.5"></div>
+            <div class="field"><label for="lterm">ผ่อนกี่เดือน</label><input type="number" id="lterm" step="12" value="84"></div>
           </div>
         </div>
       </details>
@@ -367,7 +382,8 @@ code.f { font-family: var(--body); background: var(--bg); border: 1px solid var(
           <h2>สิทธิจากรัฐ (ณ ต.ค. 2569)</h2>
           <ul class="check">
             <li><div><b>ลดหย่อนภาษี</b> ตามที่จ่ายจริงไม่เกิน 200,000 บาท ระบบออนกริดติดใหม่ไม่เกิน 10 kWp ติดตั้งช่วง 3 มี.ค. 2569 – 31 ธ.ค. 2571 ต้องมี e-Tax Invoice และเชื่อมต่อกับการไฟฟ้าสำเร็จ ได้คืน = ค่าลดหย่อน × อัตราภาษีขั้นสูงสุดของคุณ</div></li>
-            <li><div><b>เงินสนับสนุน 50,000 บาท</b> (โซลาร์ภาคประชาชน) ลงทะเบียน 27 ต.ค. 2569 – 31 ม.ค. 2570 เจ้าของมิเตอร์บ้านอยู่อาศัย ข่าวระบุขนาด 5–10 kW จ่ายคืนหลังเชื่อมต่อระบบแล้ว แอปนี้จึงไม่ให้สิทธินี้กับระบบ 3 kW</div></li>
+            <li><div><b>เงินสนับสนุน 50,000 บาท</b> (โซลาร์ภาคประชาชน, ครม. อนุมัติ 27 ต.ค. 2569) เจ้าของมิเตอร์บ้านอยู่อาศัยประเภท 1 ระบบ 5–10 kW ติดตั้งผ่านผู้รับเหมาที่ลงทะเบียนกับ กฟน./กฟภ. ใช้คู่กับลดหย่อนภาษีไม่ได้ แอปนี้จึงไม่ให้สิทธินี้กับระบบ 3 kW</div></li>
+            <li><div><b>สินเชื่อ 3 ธนาคารรัฐ</b> ออมสิน ธอส. ธ.ก.ส. ดอกเบี้ยคงที่ 2.50% ต่อปี ผ่อนสูงสุด 7 ปี (84 งวด) เงินกู้รวมเงินรัฐไม่เกิน 140,000 บาท เช่น ติดตั้ง 140,000 − เงินรัฐ 50,000 = กู้ 90,000 ผ่อนราว 1,169 บาท/เดือน ยื่นกู้ภายใน 31 ก.ค. 2570 ทำสัญญาภายใน 31 ส.ค. 2570</div></li>
             <li><div><b>ขายไฟคืน 2.20 บาท/หน่วย</b> แบบ Net Billing ใช้เองก่อน ส่วนเกินขาย ระยะสัญญามีรายงานทั้ง 10 และ 20 ปี แอปตั้งต้นที่ 10 ปีแบบระมัดระวัง</div></li>
             <li><div class="small muted">กฎยังมีการปรับ ให้เช็กประกาศของ กฟภ./กฟน. และกรมสรรพากรอีกครั้งก่อนเซ็นสัญญา</div></li>
           </ul>
@@ -413,6 +429,9 @@ code.f { font-family: var(--body); background: var(--bg); border: 1px solid var(
         <a href="https://www.krungsri.com/th/krungsri-the-coach/loan/mortgages/solar-tax-deduction" target="_blank" rel="noopener">กรุงศรี – ลดหย่อนภาษีโซลาร์ 2569</a>
         <a href="https://www.krungsri.com/th/krungsri-the-coach/loan/mortgages/solar-home-installation-permit" target="_blank" rel="noopener">กรุงศรี – ช่วงราคาติดตั้ง 5 kW / 10 kW</a>
         <a href="https://www.dailynews.co.th/news/6309637/" target="_blank" rel="noopener">เดลินิวส์ – ลงทะเบียนโซลาร์ภาคประชาชน 50,000 บาท</a>
+        <a href="https://www.thansettakij.com/general-news/672354" target="_blank" rel="noopener">ฐานเศรษฐกิจ – สรุปสินเชื่อ ธ.ก.ส. ธอส. ออมสิน (27 ต.ค. 2569)</a>
+        <a href="https://www.thaipbs.or.th/news/content/571775" target="_blank" rel="noopener">Thai PBS – สินเชื่อ Solar ภาคประชาชน 2.5% ผ่อนราว 1,200 บาท</a>
+        <a href="https://www.posttoday.com/smart-city/751050" target="_blank" rel="noopener">โพสต์ทูเดย์ – ออมสินปล่อยกู้โซลาร์ 2.5% 7 ปี ไม่ต้องมีหลักประกัน</a>
         <a href="https://thaipublica.org/?p=408352" target="_blank" rel="noopener">ไทยพับลิก้า – กพช. รับซื้อไฟ 2.20 บาท แบบ Net Billing</a>
         <a href="https://globalsolaratlas.info/map?c=13.75,100.5,7" target="_blank" rel="noopener">Global Solar Atlas – ค่าผลผลิตไฟจากแสงอาทิตย์ในไทย</a>
       </section>
@@ -437,7 +456,14 @@ code.f { font-family: var(--body); background: var(--bg); border: 1px solid var(
 })();
 (function () {
   const SIZES = [3, 5, 10];
-  const VAT = 1.07, SERVICE = 38.22, YEARS = 25, M2_PER_KW = 6;
+  const VAT = 1.07, SERVICE = 38.22, YEARS = 25, M2_PER_KW = 6, LOAN_CAP = 140000;
+  const BANKS = {
+    cash: '',
+    gsb: 'ออมสิน: ไม่ต้องมีหลักประกัน อายุ 20 ปีขึ้นไป ถ้ากู้ส่วนของเงินรัฐ 50,000 ไปก่อน ปลอดเงินต้นและดอกเบี้ย 6 เดือนจนเงินรัฐเข้ามาตัดหนี้ ใช้ใบเสนอราคา + ประวัติค่าไฟ 6 เดือน',
+    ghb: 'ธอส.: กู้ได้ไม่เกิน 90,000 (ไม่รวมเงินรัฐ) ภาระหนี้รวมไม่เกิน 70% ของรายได้ และเหลือเงินหลังผ่อนไม่ต่ำกว่า 3,000 บาท ตัวอย่างของธนาคาร: กู้ 90,000 ผ่อน ~1,200/เดือน ดอกเบี้ยรวม ~8,136',
+    baac: 'ธ.ก.ส.: เฉพาะเกษตรกรลูกค้า ธ.ก.ส. คิดแบบลดต้นลดดอก ใช้แผงโซลาร์เป็นหลักประกัน อายุรวมระยะสัญญาไม่เกิน 85 ปี',
+  };
+  const LOAN_COMMON = ' · ทุกธนาคาร: ระบบ 5–10 kW, เงินกู้ + เงินรัฐรวมไม่เกิน 140,000, ใช้คู่กับลดหย่อนภาษีไม่ได้, รายได้ขายไฟหักชำระหนี้ก่อน, ยื่นกู้ภายใน 31 ก.ค. 2570';
   const TIERS = [[200, 3.0], [200, 4.1584], [Infinity, 4.3583]];
   const INVERTER = { 3: 20000, 5: 28000, 10: 45000 };
   const UPKEEP = { 3: 800, 5: 1000, 10: 1500 };
@@ -500,6 +526,9 @@ code.f { font-family: var(--body); background: var(--bg); border: 1px solid var(
       esc: num('esc', 0) / 100,
       contract: parseInt($('contract').value, 10),
       deg: num('deg', 0.5) / 100,
+      pay: $('pay').value,
+      lrate: num('lrate', 2.5),
+      lterm: Math.max(1, Math.round(num('lterm', 84))),
     };
   }
 
@@ -530,7 +559,22 @@ code.f { font-family: var(--body); background: var(--bg); border: 1px solid var(
     if (I.incent === 'tax') { incentive = tax; incentName = 'ลดหย่อนภาษี'; }
     else if (I.incent === 'sub') { incentive = sub; incentName = sub ? 'เงินสนับสนุน 50,000' : 'ไม่เข้าเงื่อนไข 50,000'; }
     else if (I.incent === 'auto') { if (sub >= tax && sub > 0) { incentive = sub; incentName = 'เงินสนับสนุน 50,000'; } else if (tax > 0) { incentive = tax; incentName = 'ลดหย่อนภาษี'; } }
-    const net = cost - incentive;
+    const flags = [];
+
+    // state-bank loan (Solar ภาคประชาชน): only with the 50,000 subsidy, 5–10 kW,
+    // loan + subsidy capped at 140,000; reducing-balance installment
+    let loan = null;
+    if (I.pay !== 'cash') {
+      if (kw < 5 || kw > 10) flags.push('สินเชื่อโซลาร์ภาคประชาชนให้เฉพาะระบบ 5–10 kW');
+      else {
+        incentive = Math.min(50000, cost); incentName = 'เงินสนับสนุน 50,000 (คู่กับสินเชื่อ)';
+        const principal = Math.max(0, Math.min(cost, LOAN_CAP) - incentive);
+        const down = Math.max(0, cost - LOAN_CAP);
+        const pmt = installment(principal, I.lrate, I.lterm);
+        loan = { principal, down, pmt, interest: pmt * I.lterm - principal, outPocket: Math.max(0, pmt - mSell) };
+      }
+    }
+    const net = cost - incentive + (loan ? loan.interest : 0);
 
     // lifetime cash flow
     let cum = -net, payback = null, totSave = 0, totSell = 0, totCost = 0;
@@ -550,11 +594,17 @@ code.f { font-family: var(--body); background: var(--bg); border: 1px solid var(
     const prodYear = prodDay1 * 365;
     const selfPct = prodYear > 0 ? y1.self / (y1.self + y1.exp) : 0;
     const coverPct = dailyLoad > 0 ? y1.self / dailyLoad : 0;
-    const flags = [];
     if (I.phase === 1 && kw > 5) flags.push('ไฟ 1 เฟสขนานไฟได้ไม่เกิน 5 kW ต้องขอเปลี่ยนเป็น 3 เฟสก่อน (มีค่าใช้จ่ายเพิ่ม)');
     if (isFinite(I.roof) && I.roof > 0 && I.roof < kw * M2_PER_KW) flags.push(`ต้องใช้หลังคาราว ${kw * M2_PER_KW} ตร.ม. มีอยู่ ${fmt(I.roof)} ตร.ม.`);
     return { kw, load, rows: y1.rows, prodYear, mProd: prodYear / 12, mSelf, mExp, selfPct, coverPct, before, after, mSave, mSell,
-      cost, incentive, incentName, net, payback, gain25: cum, totSave, totSell, totCost, flags, feasible: flags.length === 0 };
+      cost, incentive, incentName, net, loan, payback, gain25: cum, totSave, totSell, totCost, flags, feasible: flags.length === 0 };
+  }
+
+  // equal monthly installment, reducing balance (ลดต้นลดดอก)
+  function installment(P, ratePct, n) {
+    if (P <= 0 || n <= 0) return 0;
+    const r = ratePct / 100 / 12;
+    return r === 0 ? P / n : P * r / (1 - Math.pow(1 + r, -n));
   }
 
   function recommend(res, I) {
@@ -574,6 +624,8 @@ code.f { font-family: var(--body); background: var(--bg); border: 1px solid var(
     const dailyLoad = I.units * 12 / 365;
     $('dayHint').textContent = `กลางวัน ${Math.round(I.share * 100)}% ≈ ${fmt(dailyLoad * I.share, 1)} หน่วย/วัน · กลางคืน ≈ ${fmt(dailyLoad * (1 - I.share), 1)} หน่วย/วัน`;
     document.querySelectorAll('#presets button').forEach(b => b.setAttribute('aria-pressed', String(Math.abs(b.dataset.v - I.share * 100) < 0.5)));
+    $('loanInfo').textContent = I.pay === 'cash' ? '' : BANKS[I.pay] + LOAN_COMMON;
+    $('incent').disabled = I.pay !== 'cash';
 
     const res = SIZES.map(k => simulate(k, I));
     const best = recommend(res, I);
@@ -597,6 +649,11 @@ code.f { font-family: var(--body); background: var(--bg); border: 1px solid var(
       R.push(`ระบบ ${best.kw} kW ผลิต ≈ ${fmt(best.mProd)} หน่วย/เดือน บ้านใช้เองได้ ${Math.round(best.selfPct * 100)}% ของที่ผลิต และแทนไฟจากการไฟฟ้าได้ ${Math.round(best.mSelf / I.units * 100)}% ของการใช้ทั้งเดือน`);
       R.push(`ค่าไฟลดจาก ${fmt(best.before)} เหลือ ${fmt(best.after)} บาท/เดือน${best.mSell > 0 ? ` และขายไฟได้อีก ≈ ${fmt(best.mSell)} บาท/เดือน` : ''}`);
       const bigger = res.find(r => r.kw > best.kw && r.feasible && r.payback !== null);
+      if (best.loan) {
+        const L = best.loan;
+        R.push(`ผ่อนธนาคาร: กู้ ${fmt(L.principal)} บาท${L.down ? ` (จ่ายเงินสดส่วนเกินวงเงินอีก ${fmt(L.down)})` : ''} ผ่อน ${fmt(L.pmt)} บาท/เดือน × ${I.lterm} งวด ดอกเบี้ยรวม ${fmt(L.interest)} บาท`);
+        R.push(`ระหว่างผ่อน: ค่าไฟลด ${fmt(best.mSave)} + ขายไฟ ${fmt(best.mSell)} − ค่างวด ${fmt(L.pmt)} = ${best.mSave + best.mSell - L.pmt >= 0 ? 'เหลือ' : 'ขาด'} ${fmt(Math.abs(best.mSave + best.mSell - L.pmt))} บาท/เดือน (ควักจริงค่างวดหลังหักรายได้ขายไฟ ≈ ${fmt(L.outPocket)} บาท)`);
+      }
       if (bigger) R.push(`${bigger.kw} kW ใช้เองได้แค่ ${Math.round(bigger.selfPct * 100)}% ไฟที่เกินขายได้ 2.20 บาท ถูกกว่าค่าไฟที่ซื้อเกือบครึ่ง จึงคืนทุนช้ากว่า (${fmt(bigger.payback, 1)} ปี)`);
       const blocked = res.filter(r => !r.feasible);
       blocked.forEach(r => R.push(`${r.kw} kW ไม่แนะนำ: ${r.flags.join(' · ')}`));
@@ -623,6 +680,10 @@ code.f { font-family: var(--body); background: var(--bg); border: 1px solid var(
           <div><dt>ขายไฟ/เดือน</dt><dd>${fmt(r.mSell)} ฿</dd></div>
           <div><dt>ราคาติดตั้ง</dt><dd>${fmt(r.cost)} ฿</dd></div>
           <div><dt>สิทธิรัฐ</dt><dd>−${fmt(r.incentive)} ฿</dd></div>
+          ${r.loan ? `<div><dt>ค่างวด/เดือน</dt><dd>${fmt(r.loan.pmt)} ฿</dd></div>
+          <div><dt>ดอกเบี้ยรวม</dt><dd>${fmt(r.loan.interest)} ฿</dd></div>
+          <div><dt>เงินสดจ่ายก่อน</dt><dd>${fmt(r.loan.down)} ฿</dd></div>
+          <div><dt>ระหว่างผ่อน/เดือน</dt><dd>${r.mSave + r.mSell - r.loan.pmt >= 0 ? '+' : '−'}${fmt(Math.abs(r.mSave + r.mSell - r.loan.pmt))} ฿</dd></div>` : ''}
           <div><dt>กำไร 25 ปี</dt><dd>${fmt(r.gain25)} ฿</dd></div>
           <div><dt>หลังคาที่ต้องใช้</dt><dd>~${r.kw * M2_PER_KW} ตร.ม.</dd></div>
         </dl>
@@ -645,6 +706,7 @@ code.f { font-family: var(--body); background: var(--bg); border: 1px solid var(
     const rowsT = [
       ['เงินลงทุน (ราคาติดตั้ง)', r => fmt(r.cost)],
       ['หักสิทธิรัฐ', r => `−${fmt(r.incentive)}<div class="hint">${r.incentName}</div>`],
+      ...(I.pay !== 'cash' ? [['ดอกเบี้ยเงินกู้', r => r.loan ? `+${fmt(r.loan.interest)}` : '–']] : []),
       ['ลงทุนสุทธิ', r => `<b>${fmt(r.net)}</b>`],
       ['ค่าไฟที่ประหยัดได้ 25 ปี', r => fmt(r.totSave)],
       [`รายได้ขายไฟ (${I.contract >= 25 ? '25' : I.contract} ปี)`, r => fmt(r.totSell)],
@@ -695,7 +757,7 @@ code.f { font-family: var(--body); background: var(--bg); border: 1px solid var(
   }
 
   // ---------- persistence (per-viewer convenience) ----------
-  const IDS = ['usage', 'dayShare', 'region', 'phase', 'orient', 'shade', 'roof', 'sell', 'incent', 'bracket', 'c3', 'c5', 'c10', 'yieldAdj', 'ft', 'esc', 'contract', 'deg'];
+  const IDS = ['usage', 'dayShare', 'region', 'phase', 'orient', 'shade', 'roof', 'sell', 'incent', 'bracket', 'c3', 'c5', 'c10', 'yieldAdj', 'ft', 'esc', 'contract', 'deg', 'pay', 'lrate', 'lterm'];
   function save() {
     try { localStorage.setItem('solar-size-v1', JSON.stringify({ mode: usageMode, v: IDS.map(id => [id, $(id).selectedIndex ?? null, $(id).value]) })); } catch (e) {}
   }
